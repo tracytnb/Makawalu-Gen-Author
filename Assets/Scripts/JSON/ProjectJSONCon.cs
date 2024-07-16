@@ -52,6 +52,11 @@ public class ProjectJSONCon : MonoBehaviour
         }
     }
 
+    public void SaveBaseLayerToJSON()
+    {
+        
+    }
+
     public ProjectJSON LoadCurrentFromJSON()
     {
         if (File.Exists(jsonURL))
