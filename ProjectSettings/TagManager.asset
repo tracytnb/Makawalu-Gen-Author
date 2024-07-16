@@ -3,7 +3,15 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - DataLayer
+  - Data1
+  - ProjectInfo
+  - Data4
+  - Data2
+  - Data3
+  - ProjectManager
+  - BaseManager
   layers:
   - Default
   - TransparentFX

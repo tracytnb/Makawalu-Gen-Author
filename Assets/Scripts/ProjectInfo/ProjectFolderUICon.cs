@@ -17,13 +17,18 @@ public class ProjectFolderUICon : MonoBehaviour
     {
         projManager = GameObject.FindWithTag("ProjectManager");
 
-        projPathBrowseButton.onClick.AddListener(() =>{
+        if (projManager == null)
+        {
+            Debug.LogError("ERROR: Unable to find project manager");
+        }
+
+        projPathBrowseButton.onClick.AddListener(() => {
             SelectValidateProjPath();
         });
 
         projPathSaveButton.onClick.AddListener(() => {
             // send to JSON to be saved
-            projManager.GetComponent<ProjectJSONCon>().SaveProjPathToJSON(projectPath.text);
+            projManager.GetComponent<ProjectJSONConAuth>().SaveProjPathToJSON(projectPath.text);
             // SaveProjPath(projectPath.text);
         });
     }
@@ -65,6 +70,6 @@ public class ProjectFolderUICon : MonoBehaviour
     public void SaveProjPath(string folderPath)
     {
         // send to JSON to be saved
-        projManager.GetComponent<ProjectJSONCon>().SaveProjPathToJSON(folderPath);
+        projManager.GetComponent<ProjectJSONConAuth>().SaveProjPathToJSON(folderPath);
     }
 }

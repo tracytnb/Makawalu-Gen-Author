@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-public class ProjectJSONCon : MonoBehaviour
+public class ProjectJSONConAuth : MonoBehaviour
 {
     // Where majority of global variables should be
     public static string selectedFolderPath;
@@ -26,11 +26,6 @@ public class ProjectJSONCon : MonoBehaviour
         jsonURL = path;
         // Create a new project JSON file
         ProjectJSON newProjJSON = new ProjectJSON(projectName, projectDesc, jsonURL, baseLayerPath, dataLayerPaths);
-        // Initialize empty data layer paths
-        if (dataLayerPaths.Length == 0)
-        {
-            newProjJSON.InitializeDefaultPaths();
-        }
         string entry = JsonUtility.ToJson(newProjJSON, true);
         File.WriteAllText(path, entry);
         Debug.Log("SAVE  PROJPATH JSON:\n" + entry);
@@ -38,37 +33,29 @@ public class ProjectJSONCon : MonoBehaviour
 
     public void SaveProjInfoToJSON(string title, string desc)
     {
-        ProjectJSON existingJson = LoadCurrentFromJSON();
-
-        if (existingJson != null)
+        if (File.Exists(jsonURL))
         {
-            existingJson.projectName = title;
-            existingJson.projectDesc = desc;
+            // Update class variables
+            projectName = title;
+            projectDesc = desc;
 
-            string json = JsonUtility.ToJson(existingJson, true);
-            File.WriteAllText(jsonURL, json);
-
-            Debug.Log("SAVE PROJINFO JSON: " + json);
+            // save to JSON with set class variables
+            ProjectJSON newJSON = new ProjectJSON(projectName, projectDesc, jsonURL, baseLayerPath, dataLayerPaths);
+            // Initialize empty data layer paths
+            if (dataLayerPaths.Length == 0)
+            {
+                // create empty data layers 
+                newJSON.InitializeDefaultPaths();
+            }
+            string entry = JsonUtility.ToJson(newJSON, true);
+            File.WriteAllText(jsonURL, entry);
+            Debug.Log("SAVE PROJINFO JSON: " + entry);
         }
     }
 
-    public void SaveBaseLayerToJSON()
+    public void SaveBaseLayerToJSON(string basePath)
     {
         
     }
-
-    public ProjectJSON LoadCurrentFromJSON()
-    {
-        if (File.Exists(jsonURL))
-        {
-            // Get current JSON file
-            string json = File.ReadAllText(jsonURL);
-            return JsonUtility.FromJson<ProjectJSON>(json);
-        }
-        else
-        {
-            Debug.LogError("ERROR: jsonURL doesn't exist, make sure Project Path has been saved");
-            return null;
-        }
-    }
 }
+
