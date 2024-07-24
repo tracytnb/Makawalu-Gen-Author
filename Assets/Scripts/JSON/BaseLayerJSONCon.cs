@@ -29,7 +29,7 @@ public class BaseLayerJSONCon : MonoBehaviour
     public void SaveBaseInfoToJSON(string imgPath, string title, string desc)
     {
         // reference global variable folder path
-        string path = ProjectJSONConAuth.selectedFolderPath;
+        string path = ProjectJSONConAuth.persistentFolderPath;
         string dirPath = Path.Combine(path, "BaseLayer");
         // create BaseLayer directory if it doesn't already exist
         if (!Directory.Exists(dirPath))
@@ -67,6 +67,14 @@ public class BaseLayerJSONCon : MonoBehaviour
         string entry = JsonUtility.ToJson(baseJSON, true);
         File.WriteAllText(path, entry);
         Debug.Log("SAVE BASEPATH JSON:\n" + entry);
+        projManager.GetComponent<ProjectJSONConAuth>().SaveBasePathToJSON(dirPath);
+        Debug.Log("SAVED Base Directory path to project json: " + dirPath);
+
+    }
+
+    public void SaveBaseToPersistent(string imgPath, string title, string desc)
+    {
+
     }
 
     public string SaveBaseImg(string sourceFile, string destDir, string title)

@@ -61,7 +61,7 @@ public class BaseLayerUICon : MonoBehaviour
         {
             // Store image file data
             byte[] bytes = File.ReadAllBytes(imgPath);
-            Texture2D texture = new Texture2D(450, 450); // Create a temporary texture (size will be updated)
+            Texture2D texture = new(450, 450); // Create a temporary texture (size will be updated)
             texture.LoadImage(bytes); 
             baseImg.gameObject.SetActive(true);
             baseImg.texture = texture; // Update texture of basemap

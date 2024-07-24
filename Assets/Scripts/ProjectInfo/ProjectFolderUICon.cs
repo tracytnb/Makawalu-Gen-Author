@@ -28,7 +28,7 @@ public class ProjectFolderUICon : MonoBehaviour
 
         projPathSaveButton.onClick.AddListener(() => {
             // send to JSON to be saved
-            projManager.GetComponent<ProjectJSONConAuth>().SaveProjPathToJSON(projectPath.text);
+            //projManager.GetComponent<ProjectJSONConAuth>().SaveProjPathToJSON(projectPath.text);
             // SaveProjPath(projectPath.text);
         });
     }
@@ -67,9 +67,9 @@ public class ProjectFolderUICon : MonoBehaviour
     }
 
 
-    public void SaveProjPath(string folderPath)
-    {
-        // send to JSON to be saved
-        projManager.GetComponent<ProjectJSONConAuth>().SaveProjPathToJSON(folderPath);
-    }
+    //public void SaveProjPath(string folderPath)
+    //{
+    //    // send to JSON to be saved
+    //    projManager.GetComponent<ProjectJSONConAuth>().SaveProjPathToJSON(folderPath);
+    //}
 }
