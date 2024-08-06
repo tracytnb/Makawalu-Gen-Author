@@ -22,24 +22,6 @@ public class ProjectJSONConAuth : MonoBehaviour
     // public GameObject baseLayerManager;
     // public GameObject dataLayerManager;
 
-    //public void SaveProjPathToJSON(string projPath)
-    //{
-    //    // Set the global variable for projectPath
-    //    selectedFolderPath = projPath;
-    //    Debug.Log("selectedFolderPath: " + selectedFolderPath);
-    //    rootPath = Path.GetFileName(selectedFolderPath);
-    //    Debug.Log("rootFolderPath: " + rootPath);
-    //    // create new Json file for projPath provided 
-    //    string path = Path.Combine(rootPath, "ProjectInformation.json"); // /Users/tracy/Desktop/dsadsa/ProjectInformation.json
-    //    Debug.Log("New Project Folder jsonURL: " + path);
-    //    jsonURL = path;
-    //    // Create a new project JSON file
-    //    ProjectJSON newProjJSON = new ProjectJSON(projectName, projectDesc, jsonURL, baseLayerPath, dataLayerPaths);
-    //    string entry = JsonUtility.ToJson(newProjJSON, true);
-    //    File.WriteAllText(path, entry);
-    //    Debug.Log("SAVE  PROJPATH JSON:\n" + entry);
-    //}
-
     //  Saves progress of everything into persistent path
     public void SaveProjectToPersistent(string title, string desc, string basePath, DataLayer[] dataPaths)
     {
@@ -81,7 +63,7 @@ public class ProjectJSONConAuth : MonoBehaviour
     }
 
 
-    public void SaveProjInfoToJSON(string title, string desc)
+    public void SaveProjInfoToPersistent(string title, string desc)
     {
         // Update class variables
         projectName = title;
@@ -91,7 +73,7 @@ public class ProjectJSONConAuth : MonoBehaviour
         SaveProjectToPersistent(projectName, projectDesc, baseLayerPath, dataLayerPaths);
     }
 
-    public void SaveBasePathToJSON(string basePath)
+    public void SaveBasePathToPersistent(string basePath)
     {
         if (Directory.Exists(basePath))
         {
@@ -100,6 +82,17 @@ public class ProjectJSONConAuth : MonoBehaviour
 
             // Update persistent path information
             SaveProjectToPersistent(projectName, projectDesc, baseLayerPath, dataLayerPaths);
+        }
+    }
+
+    public void SaveDataPathToPersistent(string layerPath)
+    {
+        for (int i = 0; i < dataLayerPaths.Length; i++)
+        {
+            if (string.IsNullOrEmpty(dataLayerPaths[i].dataLayerPath))
+            {
+                dataLayerPaths[i].dataLayerPath = layerPath;
+            }
         }
     }
 

@@ -30,10 +30,7 @@ public class ProjectInfoUICon : MonoBehaviour
 
     public void ValidateProjInfo()
     {
-        projTitle = inputProjTitle.text;
-        projDesc = inputProjDesc.text;
-
-        if (string.IsNullOrEmpty(projTitle))
+        if (string.IsNullOrEmpty(inputProjTitle.text))
         {
             // Future: Validate for punctuations and characters that are not allowed?
             Debug.LogError("ERROR: Project Title must contain something");
@@ -41,16 +38,19 @@ public class ProjectInfoUICon : MonoBehaviour
             // Future: Add GUI error notice/message 
         }
 
-        if (string.IsNullOrEmpty(projDesc))
+        if (string.IsNullOrEmpty(inputProjDesc.text))
         {
             Debug.LogError("ERROR: Project Description must contain a short description");
             return;
             // Future: Add GUI error notice/message 
         }
 
+        projTitle = inputProjTitle.text;
+        projDesc = inputProjDesc.text;
+
         // everything is filled in
         Debug.Log("ENTERED SAVE PROJECT INFO:\nProject Title: " + projTitle + "\nProject Desc: " + projDesc);
-        projManager.GetComponent<ProjectJSONConAuth>().SaveProjInfoToJSON(projTitle, projDesc);
+        projManager.GetComponent<ProjectJSONConAuth>().SaveProjInfoToPersistent(projTitle, projDesc);
     }
 
     public void UpdateProjectView()

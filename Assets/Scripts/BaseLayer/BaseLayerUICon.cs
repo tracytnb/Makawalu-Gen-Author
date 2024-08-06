@@ -45,8 +45,10 @@ public class BaseLayerUICon : MonoBehaviour
         if (paths.Length > 0)
         {
             baseImgPath = paths[0];
+            ValidateBaseImg(paths[0]);
             inputBaseImgPath.text = baseImgPath;
-            StartCoroutine(DisplayTextureFromPath(baseImgPath));
+            baseImgPath = inputBaseImgPath.text;
+            StartCoroutine(HelperMethods.DisplayTextureFromPath(paths[0], 390, baseImg, "Base Layer"));
             Debug.Log("Selected file paths[0]: " + paths[0]);
         }
         else
@@ -55,48 +57,24 @@ public class BaseLayerUICon : MonoBehaviour
         }
     }
 
-    public IEnumerator DisplayTextureFromPath(string imgPath)
-    {
-        if (File.Exists(imgPath))
-        {
-            // Store image file data
-            byte[] bytes = File.ReadAllBytes(imgPath);
-            Texture2D texture = new(450, 450); // Create a temporary texture (size will be updated)
-            texture.LoadImage(bytes); 
-            baseImg.gameObject.SetActive(true);
-            baseImg.texture = texture; // Update texture of basemap
-            Debug.Log("Base layer texture has been updated to file in path: " + imgPath);
-
-        }
-        else
-        {
-            Debug.LogError("File does not exist: " + imgPath);
-        }
-
-        yield return null;
-    }
-
     public void ValidateBaseInfo()
     {
-        baseImgPath = inputBaseImgPath.text;
-        baseTitle = inputBaseTitle.text;
-        baseDesc = inputBaseDesc.text;
-
-        ValidateBaseImg(baseImgPath);
-
-        if (string.IsNullOrEmpty(baseTitle))
+        if (string.IsNullOrEmpty(inputBaseTitle.text))
         {
             Debug.LogError("ERROR: Background Map Title cannot be empty");
             return;
         }
 
-        if (string.IsNullOrEmpty(baseDesc))
+        if (string.IsNullOrEmpty(inputBaseDesc.text))
         {
             Debug.LogError("ERROR: Background Map Description cannot be empty");
             return;
         }
 
-        baseManager.GetComponent<BaseLayerJSONCon>().SaveBaseInfoToJSON(baseImgPath, baseTitle, baseDesc);
+        baseTitle = inputBaseTitle.text;
+        baseDesc = inputBaseDesc.text;
+
+        baseManager.GetComponent<BaseLayerJSONCon>().SaveBaseInfoToPersistent(baseImgPath, baseTitle, baseDesc);
     }
 
     // For error checking

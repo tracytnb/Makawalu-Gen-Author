@@ -26,7 +26,7 @@ public class BaseLayerJSONCon : MonoBehaviour
         }
     }
 
-    public void SaveBaseInfoToJSON(string imgPath, string title, string desc)
+    public void SaveBaseInfoToPersistent(string imgPath, string title, string desc)
     {
         // reference global variable folder path
         string path = ProjectJSONConAuth.persistentFolderPath;
@@ -54,7 +54,7 @@ public class BaseLayerJSONCon : MonoBehaviour
         }
         
         // Handle image
-        string savedImgPath = SaveBaseImg(imgPath, dirPath, title);
+        string savedImgPath = HelperMethods.CopyImageFile(imgPath, dirPath, title, ".png");
 
         // Update class variables
         jsonURL = path;
@@ -67,26 +67,13 @@ public class BaseLayerJSONCon : MonoBehaviour
         string entry = JsonUtility.ToJson(baseJSON, true);
         File.WriteAllText(path, entry);
         Debug.Log("SAVE BASEPATH JSON:\n" + entry);
-        projManager.GetComponent<ProjectJSONConAuth>().SaveBasePathToJSON(dirPath);
-        Debug.Log("SAVED Base Directory path to project json: " + dirPath);
+        projManager.GetComponent<ProjectJSONConAuth>().SaveBasePathToPersistent(dirPath);
+        Debug.Log("SAVED Base Directory path to PERSISTENT PATH Project JSON: " + dirPath);
 
     }
 
-    public void SaveBaseToPersistent(string imgPath, string title, string desc)
+    public void SaveBaseToJSON(string imgPath, string title, string desc)
     {
-
-    }
-
-    public string SaveBaseImg(string sourceFile, string destDir, string title)
-    {
-        // rename basemap png file
-        string destFilePath = Path.Combine(destDir, title + ".png");
-
-        // copy file to another location
-        // overwrites file if already exists
-        System.IO.File.Copy(sourceFile, destFilePath, true);
-
-        Debug.Log("Basemap file img copied from: " + sourceFile + " \nTo destination: " + destFilePath);
-        return destFilePath;
+        // Used to save base to json at the end
     }
 }

@@ -12,6 +12,8 @@ TagManager:
   - Data3
   - ProjectManager
   - BaseManager
+  - DataManager
+  - SubManager
   layers:
   - Default
   - TransparentFX
