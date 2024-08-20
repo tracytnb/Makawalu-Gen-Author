@@ -13,7 +13,17 @@ TagManager:
   - ProjectManager
   - BaseManager
   - DataManager
-  - SubManager
+  - ProjectJsonManager
+  - BaseJsonManager
+  - DataLayerJsonManager
+  - DataLayerInput
+  - SubLayerInputManager
+  - DataLayerUIManager
+  - OutputList
+  - DLItem
+  - Table_Images
+  - Table_DL_ImageGroup
+  - ProjectInfoUIManager
   layers:
   - Default
   - TransparentFX

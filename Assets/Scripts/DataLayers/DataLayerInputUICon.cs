@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 using SFB;
 using System.IO;
-using static SubLayerUICon;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
-// Attached to each individual Data Layer created
-public class DataLayerUICon : MonoBehaviour
+/*
+ Validates and sends data layer input information into DataLayerManager to be later stored into prefabs and displayed in the OUTPUT view
+ */
+public class DataLayerInputUICon : MonoBehaviour
 {
     // Input data
     public TMP_InputField inputLayerName;
@@ -24,13 +24,14 @@ public class DataLayerUICon : MonoBehaviour
     public string layerCredit;
     public string layerIconPath;
     public SubLayer[] layerSubLayers;
+    public Texture2D[] layerSubImages;
     public DateType selectedDateType;
     public string layerDateType;
     public DateValue[] layerTimescales;
     public string layerColor;
     // Data objects
-    public List<Texture> layerSubLayerImages;
-    public GameObject dataManager;
+    public List<Texture> layerSubLayerImages; // Not set yet
+    public GameObject dataUIManager;
     public GameObject subLayerManager;
     public GameObject colorPicker;
     public ScrollRect scrollRect;
@@ -38,12 +39,13 @@ public class DataLayerUICon : MonoBehaviour
     public Button dataSelectColorButton;
     public Button dataIconButton;
     public Button dataSaveButton;
+    public Button dataUpdateButton;
 
     private void Start()
     {
         colorPicker.gameObject.SetActive(false);
-        dataManager = GameObject.FindWithTag("DataManager");
-        subLayerManager = GameObject.FindWithTag("SubManager");
+        dataUIManager = GameObject.FindWithTag("DataLayerUIManager");
+        subLayerManager = GameObject.FindWithTag("SubLayerInputManager");
 
         dataSelectColorButton.onClick.AddListener(() =>
         {
@@ -59,11 +61,11 @@ public class DataLayerUICon : MonoBehaviour
         {
             ValidateDataLayerInfo();
         });
-    }
 
-    public void SaveDataLayerToJSON()
-    {
-        // Used at the end of creating the project
+        //dataUpdateButton.onClick.AddListener(() =>
+        //{
+        //    // Update existing data layer
+        //});
     }
 
     public void ValidateDataLayerInfo()
@@ -73,6 +75,9 @@ public class DataLayerUICon : MonoBehaviour
             Debug.LogError("ERROR: Data layer name is not set. Add in data layer name.");
             return;
         }
+
+        // Validate the data layer with name entered doesn't already exist
+        dataUIManager.GetComponent<DataLayerUIManager>().CheckExistingLayerName(inputLayerName.text);
 
         if (string.IsNullOrEmpty(inputLayerDesc.text))
         {
@@ -98,15 +103,47 @@ public class DataLayerUICon : MonoBehaviour
         layerDateType = selectedDateType.ToString();
 
 
-        bool subReady = subLayerManager.GetComponent<SubLayerManager>().ValidateSubLayers();
+        bool subReady = subLayerManager.GetComponent<SubLayerInputManager>().ValidateSubLayers();
 
         if (subReady)
         {
-            layerTimescales = subLayerManager.GetComponent<SubLayerManager>().dateValueList.ToArray();
-            layerSubLayers = subLayerManager.GetComponent<SubLayerManager>().subLayerList.ToArray();
+            // If all data is good, convert sub layers to arrays 
+            layerTimescales = subLayerManager.GetComponent<SubLayerInputManager>().dateValueList.ToArray();
+            layerSubLayers = subLayerManager.GetComponent<SubLayerInputManager>().subLayerList.ToArray();
+            layerSubImages = subLayerManager.GetComponent<SubLayerInputManager>().subTextureList.ToArray();
+            Debug.Log($"DL List Count: {layerTimescales.Length}\nDL SubLayers Count: {layerSubLayers.Length}\nDL SubImages Count: {layerSubImages.Length}");
+            // add new data layer information through DataLayerUIManager
+            dataUIManager.GetComponent<DataLayerUIManager>().AddDataLayerInput(layerName, layerDesc, layerCredit, layerIconPath, layerColor, layerSubLayers, layerSubImages, layerDateType, layerTimescales);
 
-            dataManager.GetComponent<DataLayerJSONCon>().SaveDataLayerToPersistent(layerName, layerDesc, layerCredit, layerIconPath, layerColor, layerSubLayers, layerDateType, layerTimescales);
+            // Clear and reset all fields and entries to be empty
+            ResetInputFields();
         }
+    }
+
+    public void ResetInputFields()
+    {
+        // Reset input fields
+        inputLayerName.text = "";
+        inputLayerDesc.text = "";
+        inputLayerCredit.text = "";
+        inputLayerColor.color = Color.white;
+        inputLayerIcon.texture = null;
+        dropdownDateType.value = 0; // DateType.None
+        // Reset sub layer input field list
+        subLayerManager.GetComponent<SubLayerInputManager>().ResetInputList();
+        // Reset input variables
+        layerName = "";
+        layerDesc = "";
+        layerCredit = "";
+        layerIconPath = "";
+        layerSubLayers = new SubLayer[0];
+        selectedDateType = DateType.None;
+        layerDateType = "";
+        layerTimescales = new DateValue[0];
+        layerColor = "";
+        // Reset color picker
+        Image colorImg = colorPicker.GetComponent<ColorPaletteController>().pickedColorImage;
+        colorImg.color = Color.white;
     }
 
     public DateType GetSelectedDateType()
@@ -134,7 +171,7 @@ public class DataLayerUICon : MonoBehaviour
             inputLayerColor.color = pickedColor.color;
             layerColor = "#" + ValidateLayerColor();
             Debug.Log("LAYERCOLOR: " + layerColor);
-            subLayerManager.GetComponent<SubLayerManager>().UpdateSubColors();
+            subLayerManager.GetComponent<SubLayerInputManager>().UpdateSubColors();
         }
     }
 

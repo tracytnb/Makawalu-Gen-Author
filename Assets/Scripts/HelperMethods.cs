@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
+using System.Drawing;
+using Color = UnityEngine.Color;
 
 public class HelperMethods : MonoBehaviour
 {
@@ -70,5 +72,43 @@ public class HelperMethods : MonoBehaviour
         Debug.Log($"{title} img coped from: {sourceFile}\nTo destination path: {destFilePath}");
 
         return destFilePath;
+    }
+
+    public static Color ParseHexColor(string hex)
+    {
+        Color color;
+
+        if (ColorUtility.TryParseHtmlString(hex, out color))
+        {
+            Debug.Log("Color parsed: " + color);
+            return color;
+        }
+        else
+        {
+            Debug.LogError("ERROR: Unable to parse hex string");
+            return Color.white;
+        }
+    }
+
+    //public static void ToggleTableItemVisibility(GameObject item)
+    //{
+
+    //}
+
+    public static Texture2D GetTexture(string imgPath, int size)
+    {
+        if (File.Exists(imgPath))
+        {
+            // Store image file data
+            byte[] bytes = File.ReadAllBytes(imgPath);
+            Texture2D texture = new(size, size); // Create a temporary texture (size will be updated)
+            texture.LoadImage(bytes);
+            return texture;
+        }
+        else
+        {
+            Debug.LogError("File does not exist: " + imgPath);
+            return null;
+        }
     }
 }

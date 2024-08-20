@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class ProjectInfoUICon : MonoBehaviour
+public class ProjectInfoInputUICon : MonoBehaviour
 {
     public TMP_InputField inputProjTitle;
     public TMP_InputField inputProjDesc;
@@ -16,13 +16,13 @@ public class ProjectInfoUICon : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        projManager = GameObject.FindWithTag("ProjectManager");
+        projManager = GameObject.FindWithTag("ProjectJsonManager");
 
         if (projManager == null)
         {
             Debug.LogError("ERROR: Unable to find project manager");
         }
-        
+
         projInfoSaveButton.onClick.AddListener(() => {
             ValidateProjInfo();
         });

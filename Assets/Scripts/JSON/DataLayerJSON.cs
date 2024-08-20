@@ -54,6 +54,21 @@ public class DateValue
         this.year = yearVal;
         this.month = monthVal;
     }
+
+    public string ToYearString()
+    {
+        return year;
+    }
+
+    public string ToMonthString()
+    {
+        return month;
+    }
+
+    public string ToMonthYearString()
+    {
+        return $"{month}/{year}";
+    }
 }
 
 public enum DateType

@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
-using System.Text.RegularExpressions;
-using System.IO;
 using SFB;
+using System.IO;
+using System.Text.RegularExpressions;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using System.Drawing;
 
-public class SubLayerUICon : MonoBehaviour
+/*
+ * A Sub layer Item in the Input View
+ */
+public class SubLayerInputUICon : MonoBehaviour
 {
     // Input data 
     public TMP_InputField inputSubName;
@@ -17,6 +21,7 @@ public class SubLayerUICon : MonoBehaviour
     // Data to pass
     public string subName;
     public string subImagePath;
+    public Texture2D subImageTexture;
     public DateValue subDateValue;
     public string subColor;
     // Data objects
@@ -28,8 +33,8 @@ public class SubLayerUICon : MonoBehaviour
 
     void Start()
     {
-        subManager = GameObject.FindWithTag("SubManager");
-        parentDataLayer = GameObject.FindWithTag("DataLayer");
+        subManager = GameObject.FindWithTag("SubLayerInputManager");
+        parentDataLayer = GameObject.FindWithTag("DataLayerInput");
 
         browseSubImageButton.onClick.AddListener(() =>
         {
@@ -41,6 +46,9 @@ public class SubLayerUICon : MonoBehaviour
         {
             DeleteSubLayer();
         });
+
+        // Set the sub image texture
+        subImageTexture = new Texture2D(1000, 1000);
     }
 
     public void SelectSubLayerImage()
@@ -94,6 +102,7 @@ public class SubLayerUICon : MonoBehaviour
             return "";
         }
 
+        // Set sub name
         subName = inputSubName.text;
         return subName;
     }
@@ -114,6 +123,19 @@ public class SubLayerUICon : MonoBehaviour
             return "";
         }
 
+        // Set and update the subImage texture, copied from HelperMethods
+        if (File.Exists(subPath))
+        {
+            // Store image file data
+            byte[] bytes = File.ReadAllBytes(subPath);
+            subImageTexture.LoadImage(bytes);
+            Debug.Log("Texture of sub layer is set from path " + subPath);
+        }
+        else
+        {
+            Debug.LogError("File does not exist: " + subPath);
+        }
+
         return subPath;
     }
 
@@ -122,7 +144,7 @@ public class SubLayerUICon : MonoBehaviour
         // Validates if the date value entered is valid and validates if the dateValue entered matches the datetype selected
         string inputText = inputSubDateValue.text;
         Debug.Log(inputSubDateValue.text);
-        DateType selectedDateType = parentDataLayer.GetComponent<DataLayerUICon>().selectedDateType; // 0 or 1 or 2 or 3
+        DateType selectedDateType = parentDataLayer.GetComponent<DataLayerInputUICon>().selectedDateType; // 0 or 1 or 2 or 3
 
         switch (selectedDateType)
         {
@@ -173,13 +195,13 @@ public class SubLayerUICon : MonoBehaviour
             default:
                 Debug.Log("No date value selected, data is not time-based and will be set as an empty string");
 
-                return  (new DateValue(), $"Date value is empty"); // default to null
+                return (new DateValue(), $"Date value is empty"); // default to null
         }
     }
 
     public string ValidateSubColor()
     {
-        Color color = inputSubColor.color;
+        UnityEngine.Color color = inputSubColor.color;
         subColor = ColorUtility.ToHtmlStringRGB(color);
 
         if (subColor == null)
@@ -194,7 +216,7 @@ public class SubLayerUICon : MonoBehaviour
 
     public void DeleteSubLayer()
     {
-        int listCount = subManager.GetComponent<SubLayerManager>().subLayerUIList.childCount;
+        int listCount = subManager.GetComponent<SubLayerInputManager>().subLayerUIList.childCount;
 
         if (listCount < 2)
         {
@@ -203,7 +225,7 @@ public class SubLayerUICon : MonoBehaviour
         else
         {
             Destroy(gameObject);
-            Debug.Log("Removed subLayer. Sub layer list count is now " + subManager.GetComponent<SubLayerManager>().subLayerUIList.childCount);
+            Debug.Log("Removed subLayer. Sub layer list count is now " + subManager.GetComponent<SubLayerInputManager>().subLayerUIList.childCount);
         }
     }
 }

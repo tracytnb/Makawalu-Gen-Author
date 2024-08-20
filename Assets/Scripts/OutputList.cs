@@ -1,28 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Switch : MonoBehaviour
+public class OutputList : MonoBehaviour
 {
     public string tagged;
     public GameObject[] items;
-    public GameObject offImg;
-    public GameObject onImg;
+    public GameObject offIcon;
+    public GameObject onIcon;
+    public Button tabButton; // self
     int num;
+
     // Start is called before the first frame update
     void Start()
     {
         num = 1;
         items = GameObject.FindGameObjectsWithTag(tagged);
+
+        tabButton = gameObject.GetComponent<Button>();
+
+        tabButton.onClick.AddListener(() =>
+        {
+            ActivateAllItems();
+        });
     }
 
-    public void ActivateItem()
+    public void ActivateAllItems()
     {
         if (num == 0)
         {
             // turn item on
-            offImg.SetActive(false);
-            onImg.SetActive(true);
+            offIcon.SetActive(false);
+            onIcon.SetActive(true);
 
             foreach (GameObject obj in items)
             {
@@ -32,8 +42,8 @@ public class Switch : MonoBehaviour
         }
         else
         {
-            offImg.SetActive(true);
-            onImg.SetActive(false);
+            offIcon.SetActive(true);
+            onIcon.SetActive(false);
 
             foreach (GameObject obj in items)
             {

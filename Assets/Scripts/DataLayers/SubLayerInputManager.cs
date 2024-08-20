@@ -2,30 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static Unity.VisualScripting.Metadata;
 
-public class SubLayerManager : MonoBehaviour
+public class SubLayerInputManager : MonoBehaviour
 {
     // Data to pass 
     public List<SubLayer> subLayerList;
     public List<DateValue> dateValueList;
-    public List<Texture> subTextureList;
+    public List<Texture2D> subTextureList; // unused
     // Data objects
     public Transform subLayerUIList; // SubDataLayerScrollList > ItemContent
     public GameObject subLayerPrefab;
     public GameObject newSubLayer;
-    public GameObject dataLayerObject;
+    public GameObject dataLayerInputObject;
     // buttons
     public Button addSubLayerButton;
 
     private void Start()
     {
-        dataLayerObject = GameObject.FindWithTag("DataLayer");
+        dataLayerInputObject = GameObject.FindWithTag("DataLayerInput");
 
         addSubLayerButton.onClick.AddListener(() =>
         {
             AddSubLayer();
-            // instantiates a new sublayer entry prefab
         });
     }
 
@@ -40,21 +38,30 @@ public class SubLayerManager : MonoBehaviour
         Debug.Log(subLayerUIList.childCount);
         foreach (Transform subLayer in subLayerUIList)
         {
-            var subUICon = subLayer.GetComponent<SubLayerUICon>();
+            var subUICon = subLayer.GetComponent<SubLayerInputUICon>();
 
+            // Handle name
             string name = subUICon.ValidateSubLayerName();
-            Debug.Log("NAME:" + name);
             if (string.IsNullOrEmpty(name))
             {
                 Debug.LogError("display sub layer NAME error indicator");
             }
+            Debug.Log("NAME:" + name);
 
+            // Handle sub image
             string img = subUICon.ValidateSubImg();
-            Debug.Log("IMG PATH: " + img);
             if (string.IsNullOrEmpty(img))
             {
                 Debug.LogError("display sub layer IMAGE error indicator");
             }
+            Debug.Log("IMG PATH: " + img);
+
+            Texture2D subImg = subUICon.subImageTexture;
+            if (subImg == null)
+            {
+                Debug.LogError("ERROR: Sub layer texture is null");
+            }
+            subTextureList.Add(subImg);
 
             string color = subUICon.ValidateSubColor();
             if (string.IsNullOrEmpty(img))
@@ -96,12 +103,57 @@ public class SubLayerManager : MonoBehaviour
         {
             Debug.Log("All sublayers are valid");
             return subLayersReady;
-            
+
         }
         else
         {
             Debug.LogError("some sub layers need to be fixed");
             return subLayersReady;
+        }
+    }
+
+    public void LoadInputSubLayers(SubLayer[] subLayersArray, string dateType)
+    {
+        // Intialize sub layer count
+        int subCount = subLayersArray.Length - 1; // 1 because the subLayerUIList by default already has one
+
+        for(int i = 0; i < subCount; i++)
+        {
+            AddSubLayer();
+        }
+
+        UpdateSubColors();
+
+        for (int j = 0; j < subLayersArray.Length; j++)
+        {
+            Transform subTrans = subLayerUIList.GetChild(j);
+            SubLayer subInfo = subLayersArray[j];
+
+            subTrans.GetComponent<SubLayerInputUICon>().inputSubName.text = subInfo.subName;
+            subTrans.GetComponent<SubLayerInputUICon>().inputSubImagePath.text = subInfo.imgURLPath;
+
+            if (dateType == "Year")
+            {
+                subTrans.GetComponent<SubLayerInputUICon>().inputSubDateValue.text = subInfo.dateValue.ToYearString();
+            }
+
+            if (dateType == "Month")
+            {
+                subTrans.GetComponent<SubLayerInputUICon>().inputSubDateValue.text = subInfo.dateValue.ToMonthString();
+            }
+
+            if (dateType == "MonthYear")
+            {
+                subTrans.GetComponent<SubLayerInputUICon>().inputSubDateValue.text = subInfo.dateValue.ToMonthYearString();
+            }
+
+            //subTrans.GetComponent<SubLayerInputUICon>().inputSubColor.color = HelperMethods.ParseHexColor(subInfo.subColorCode);
+
+            // Load in variables
+            subTrans.GetComponent<SubLayerInputUICon>().subName = subInfo.subName;
+            subTrans.GetComponent<SubLayerInputUICon>().subImagePath = subInfo.imgURLPath;
+            subTrans.GetComponent<SubLayerInputUICon>().subDateValue = subInfo.dateValue;
+            subTrans.GetComponent<SubLayerInputUICon>().subColor = subInfo.subColorCode;
         }
     }
 
@@ -129,7 +181,7 @@ public class SubLayerManager : MonoBehaviour
         float increment = 1.0f / segments;
         Color mainColor;
 
-        if (ColorUtility.TryParseHtmlString(dataLayerObject.GetComponent<DataLayerUICon>().layerColor, out mainColor))
+        if (ColorUtility.TryParseHtmlString(dataLayerInputObject.GetComponent<DataLayerInputUICon>().layerColor, out mainColor))
         {
             Debug.Log("main color was set: " + mainColor);
         }
@@ -171,5 +223,20 @@ public class SubLayerManager : MonoBehaviour
             }
         }
 
+    }
+
+    public void ResetInputList()
+    {
+        // Delete all entries 
+        foreach(Transform sublayer in subLayerUIList)
+        {
+            Destroy(sublayer.gameObject);
+        }
+
+        // Make a new sub layer item
+        newSubLayer = Instantiate(subLayerPrefab, subLayerUIList);
+        // Reset lists
+        subLayerList = new List<SubLayer>();
+        dateValueList = new List<DateValue>();
     }
 }

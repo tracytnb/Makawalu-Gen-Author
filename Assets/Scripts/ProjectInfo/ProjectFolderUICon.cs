@@ -15,7 +15,7 @@ public class ProjectFolderUICon : MonoBehaviour
 
     void Start()
     {
-        projManager = GameObject.FindWithTag("ProjectManager");
+        projManager = GameObject.FindWithTag("ProjectJsonManager");
 
         if (projManager == null)
         {
