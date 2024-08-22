@@ -31,10 +31,10 @@ public class DataLayerUIManager : MonoBehaviour
             outputObjectList = objList.transform;
         }
 
-        if (dataInputView == null)
-        {
-            Debug.LogError("ERROR: Unable to find data layer input view");
-        }
+        //if (dataInputView == null)
+        //{
+        //    Debug.LogError("ERROR: Unable to find data layer input view");
+        //}
     }
 
     // Adding a NEW data layer
@@ -107,7 +107,8 @@ public class DataLayerUIManager : MonoBehaviour
         //dataInputView.GetComponent<DataLayerInputUICon>().inputLayerIcon = 
         RawImage inputImage = dataInputView.GetComponent<DataLayerInputUICon>().inputLayerIcon;
         //Debug.Log("DJKLSAJDKLAS: " + iconPath);
-        StartCoroutine(HelperMethods.DisplayTextureFromPath(iconPath, 150, inputImage, "Data Layer Icon"));
+        //StartCoroutine(HelperMethods.DisplayTextureFromPath(iconPath, 150, inputImage, "Data Layer Icon"));
+        HelperMethods.DisplayTextureFromPath(iconPath, 150, inputImage, "Data Layer Icon");
         // Load sub layer prefabs
         subUIManager.GetComponent<SubLayerInputManager>().LoadInputSubLayers(subLayers, dateType);
         // change save button to update button

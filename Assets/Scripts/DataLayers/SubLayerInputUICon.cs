@@ -203,6 +203,7 @@ public class SubLayerInputUICon : MonoBehaviour
     {
         UnityEngine.Color color = inputSubColor.color;
         subColor = ColorUtility.ToHtmlStringRGB(color);
+        subColor = "#" + subColor;
 
         if (subColor == null)
         {

@@ -50,7 +50,8 @@ public class BaseLayerInputUICon : MonoBehaviour
             ValidateBaseImg(paths[0]);
             inputBaseImgPath.text = baseImgPath;
             baseImgPath = inputBaseImgPath.text;
-            StartCoroutine(HelperMethods.DisplayTextureFromPath(paths[0], 390, baseImg, "Base Layer"));
+            //StartCoroutine(HelperMethods.DisplayTextureFromPath(paths[0], 390, baseImg, "Base Layer"));
+            HelperMethods.DisplayTextureFromPath(paths[0], 390, baseImg, "Base Layer");
             Debug.Log("Selected file paths[0]: " + paths[0]);
         }
         else

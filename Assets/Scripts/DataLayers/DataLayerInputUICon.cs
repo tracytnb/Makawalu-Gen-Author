@@ -188,7 +188,9 @@ public class DataLayerInputUICon : MonoBehaviour
         {
             ValidateDataLayerIcon(paths[0]);
             inputLayerIcon.gameObject.SetActive(true);
-            StartCoroutine(HelperMethods.DisplayTextureFromPath(paths[0], 150, inputLayerIcon, "Data Layer Icon"));
+            //StartCoroutine(HelperMethods.DisplayTextureFromPath(paths[0], 150, inputLayerIcon, "Data Layer Icon"));
+            HelperMethods.DisplayTextureFromPath(paths[0], 150, inputLayerIcon, "Data Layer Icon");
+
         }
     }
 

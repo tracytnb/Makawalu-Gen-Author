@@ -40,7 +40,7 @@ public class HelperMethods : MonoBehaviour
         return "";
     }
 
-    public static IEnumerator DisplayTextureFromPath(string imgPath, int size, RawImage rawImage, string type)
+    public static void DisplayTextureFromPath(string imgPath, int size, RawImage rawImage, string type)
     {
         if (File.Exists(imgPath))
         {
@@ -58,7 +58,7 @@ public class HelperMethods : MonoBehaviour
             Debug.LogError("File does not exist: " + imgPath);
         }
 
-        yield return null;
+        //yield return null;
     }
 
     public static string CopyImageFile(string sourceFile, string destDirectory, string title, string type)
