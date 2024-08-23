@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 /*
  * Handles Project Information and Base Layer information to be displayed
@@ -20,6 +21,8 @@ public class ProjectInfoOutputUICon : MonoBehaviour
     {
         outputBaseTitle.GetComponent<OutputListItem>().outputObjects.Add(baseTitleTable);
         outputBaseImg.GetComponent<OutputListItem>().outputObjects.Add(baseImgTable);
+
+        baseImgTable.SetActive(false);
     }
 
     public void UpdateOutputProjectInfo(string baseName, string basePath)
@@ -28,7 +31,9 @@ public class ProjectInfoOutputUICon : MonoBehaviour
         outputBaseTitle.GetComponent<OutputListItem>().outputLabel.text = baseName + " Map Title";
         outputBaseImg.GetComponent<OutputListItem>().outputLabel.text = baseName + " Map Image";
         // Update table objects
+        baseImgTable.SetActive(true);
         baseTitleTable.GetComponent<TMP_Text>().text = baseName;
-        baseImgTable.GetComponent<RawImage>().texture = HelperMethods.GetTexture(basePath, 1000);
+        RawImage baseImg = baseImgTable.GetComponent<RawImage>();
+        HelperMethods.DisplayTextureFromPath(basePath, baseImg, "Table Base Image");
     }
 }

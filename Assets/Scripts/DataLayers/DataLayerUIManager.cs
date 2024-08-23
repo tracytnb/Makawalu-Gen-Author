@@ -32,11 +32,6 @@ public class DataLayerUIManager : MonoBehaviour
         {
             outputObjectList = objList.transform;
         }
-
-        //if (dataInputView == null)
-        //{
-        //    Debug.LogError("ERROR: Unable to find data layer input view");
-        //}
     }
 
     public void InstantiateManagers()
@@ -120,7 +115,7 @@ public class DataLayerUIManager : MonoBehaviour
         RawImage inputImage = dataInputView.GetComponent<DataLayerInputUICon>().inputLayerIcon;
         //Debug.Log("DJKLSAJDKLAS: " + iconPath);
         //StartCoroutine(HelperMethods.DisplayTextureFromPath(iconPath, 150, inputImage, "Data Layer Icon"));
-        HelperMethods.DisplayTextureFromPath(iconPath, 150, inputImage, "Data Layer Icon");
+        HelperMethods.DisplayTextureFromPath(iconPath, inputImage, "Data Layer Icon");
         // Load sub layer prefabs
         subUIManager.GetComponent<SubLayerInputManager>().LoadInputSubLayers(subLayers, dateType);
     }

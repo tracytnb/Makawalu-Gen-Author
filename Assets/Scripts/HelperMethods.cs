@@ -41,22 +41,48 @@ public class HelperMethods : MonoBehaviour
         return "";
     }
 
-    public static void DisplayTextureFromPath(string imgPath, int size, RawImage rawImage, string type)
+    public static Texture2D DisplayTextureFromPath(string imgPath, RawImage rawImage, string type)
     {
         if (File.Exists(imgPath))
         {
             // Store image file data
             byte[] bytes = File.ReadAllBytes(imgPath);
-            Texture2D texture = new(size, size); // Create a temporary texture (size will be updated)
-            texture.LoadImage(bytes);
+            Texture2D texture = new(2, 2); // Create a temporary texture (size will be updated)
+            //texture.LoadImage(bytes);
             rawImage.gameObject.SetActive(true);
+
+            if (texture.LoadImage(bytes))
+            {
+                // Adjust the texture of the RawImage
+                rawImage.gameObject.SetActive(true);
+                rawImage.texture = texture;
+
+                // Force update the AspectRatioFitter (if needed)
+                AspectRatioFitter aspectRatioFitter = rawImage.GetComponent<AspectRatioFitter>();
+                if (aspectRatioFitter != null)
+                {
+                    aspectRatioFitter.aspectRatio = (float)texture.width / texture.height;
+                    aspectRatioFitter.SetLayoutHorizontal();
+                    aspectRatioFitter.SetLayoutVertical();
+                }
+
+                Debug.Log($"{type} texture has been updated to file in path: " + imgPath);
+            }
+            else
+            {
+                Debug.LogError("Failed to load image data from: " + imgPath);
+                return null;
+            }
+
             rawImage.texture = texture; // Update texture of basemap
             Debug.Log($"{type} texture has been updated to file in path: " + imgPath);
+            return texture;
 
         }
         else
         {
             Debug.LogError("File does not exist: " + imgPath);
+            return null;
         }
 
         //yield return null;
@@ -67,8 +93,11 @@ public class HelperMethods : MonoBehaviour
         // rename file to new path based on title, and type of image (jpg, png)
         string destFilePath = Path.Combine(destDirectory, title + type);
 
-        //var source = new FileInfo(sourceFile);
-        //source.CopyTo(destFilePath, true);
+        if (sourceFile == destDirectory)
+        {
+            Debug.Log("Paths are already the same");
+            return destFilePath;
+        }
 
         try
         {
@@ -116,23 +145,6 @@ public class HelperMethods : MonoBehaviour
         {
             Debug.LogError("ERROR: Unable to parse hex string");
             return Color.white;
-        }
-    }
-
-    public static Texture2D GetTexture(string imgPath, int size)
-    {
-        if (File.Exists(imgPath))
-        {
-            // Store image file data
-            byte[] bytes = File.ReadAllBytes(imgPath);
-            Texture2D texture = new(size, size); // Create a temporary texture (size will be updated)
-            texture.LoadImage(bytes);
-            return texture;
-        }
-        else
-        {
-            Debug.LogError("File does not exist: " + imgPath);
-            return null;
         }
     }
 }

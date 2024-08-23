@@ -65,11 +65,4 @@ public class ProjectFolderUICon : MonoBehaviour
         int num = Directory.GetFiles(path).Length + Directory.GetDirectories(path).Length;
         return num == 0;
     }
-
-
-    //public void SaveProjPath(string folderPath)
-    //{
-    //    // send to JSON to be saved
-    //    projManager.GetComponent<ProjectJSONConAuth>().SaveProjPathToJSON(folderPath);
-    //}
 }

@@ -133,6 +133,7 @@ public class DataLayerInputUICon : MonoBehaviour
         inputLayerCredit.text = "";
         inputLayerColor.color = Color.white;
         inputLayerIcon.texture = null;
+        inputLayerIcon.gameObject.SetActive(false);
         dropdownDateType.value = 0; // DateType.None
         // Reset sub layer input field list
         subLayerManager.GetComponent<SubLayerInputManager>().ResetInputList();
@@ -194,7 +195,7 @@ public class DataLayerInputUICon : MonoBehaviour
             ValidateDataLayerIcon(paths[0]);
             inputLayerIcon.gameObject.SetActive(true);
             //StartCoroutine(HelperMethods.DisplayTextureFromPath(paths[0], 150, inputLayerIcon, "Data Layer Icon"));
-            HelperMethods.DisplayTextureFromPath(paths[0], 150, inputLayerIcon, "Data Layer Icon");
+            HelperMethods.DisplayTextureFromPath(paths[0], inputLayerIcon, "Data Layer Icon");
 
         }
     }
