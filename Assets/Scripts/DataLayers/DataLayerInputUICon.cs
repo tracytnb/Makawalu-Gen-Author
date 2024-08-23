@@ -39,7 +39,8 @@ public class DataLayerInputUICon : MonoBehaviour
     public Button dataSelectColorButton;
     public Button dataIconButton;
     public Button dataSaveButton;
-    public Button dataUpdateButton;
+    //  bool
+    public bool beingEdited;
 
     private void Start()
     {
@@ -61,11 +62,6 @@ public class DataLayerInputUICon : MonoBehaviour
         {
             ValidateDataLayerInfo();
         });
-
-        //dataUpdateButton.onClick.AddListener(() =>
-        //{
-        //    // Update existing data layer
-        //});
     }
 
     public void ValidateDataLayerInfo()
@@ -107,13 +103,22 @@ public class DataLayerInputUICon : MonoBehaviour
 
         if (subReady)
         {
-            // If all data is good, convert sub layers to arrays 
+            // If all data is good, convert sub layer items to arrays 
             layerTimescales = subLayerManager.GetComponent<SubLayerInputManager>().dateValueList.ToArray();
             layerSubLayers = subLayerManager.GetComponent<SubLayerInputManager>().subLayerList.ToArray();
             layerSubImages = subLayerManager.GetComponent<SubLayerInputManager>().subTextureList.ToArray();
             Debug.Log($"DL List Count: {layerTimescales.Length}\nDL SubLayers Count: {layerSubLayers.Length}\nDL SubImages Count: {layerSubImages.Length}");
-            // add new data layer information through DataLayerUIManager
-            dataUIManager.GetComponent<DataLayerUIManager>().AddDataLayerInput(layerName, layerDesc, layerCredit, layerIconPath, layerColor, layerSubLayers, layerSubImages, layerDateType, layerTimescales);
+
+            if (beingEdited)
+            {
+                dataUIManager.GetComponent<DataLayerUIManager>().UpdateExistingDataLayer(layerName, layerDesc, layerCredit, layerIconPath, layerColor, layerSubLayers, layerSubImages, layerDateType, layerTimescales);
+                ResetInputFields();
+            }
+            else
+            {
+                // add new data layer information through DataLayerUIManager
+                dataUIManager.GetComponent<DataLayerUIManager>().AddDataLayerInput(layerName, layerDesc, layerCredit, layerIconPath, layerColor, layerSubLayers, layerSubImages, layerDateType, layerTimescales);
+            }
 
             // Clear and reset all fields and entries to be empty
             ResetInputFields();

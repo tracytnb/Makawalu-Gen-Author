@@ -52,6 +52,11 @@ public class DataLayerObject : MonoBehaviour
             Debug.LogError("ERROR: Unable to locate object with tag \'DataLayerUIManager\'");
         }
         Debug.Log("Found DataLayerUIManager gameObject");
+
+        if (dataUIManager != null)
+        {
+            dataUIManager.GetComponent<DataLayerUIManager>().InstantiateManagers();
+        }
     }
 
     public void RenameObjects(string layerName)
@@ -82,18 +87,26 @@ public class DataLayerObject : MonoBehaviour
         DLColor.color = HelperMethods.ParseHexColor(color);
     }
 
-    public void UpdateOutputTableDisplay()
-    {
-        // 
-    }
-
     public void ViewDataObjectInfo() =>
         // pass the information to be loaded back into the Input View from DataLayerUIManager
-        dataUIManager.GetComponent<DataLayerUIManager>().DataLayerToEdit(layerName, layerDesc, layerCredit, layerIconPath, layerColor, layerSubLayers, layerDateType, layerTimescales);
+        dataUIManager.GetComponent<DataLayerUIManager>().DataLayerToEdit(gameObject, layerName, layerDesc, layerCredit, layerIconPath, layerColor, layerSubLayers, layerDateType, layerTimescales);
 
-    public void SetDataLayerImageGroup(Transform newGroup)
+    public void SetDataLayerImageGroup()
     {
-        DLImageGroupList = newGroup;
+        // reset the list
+        if (DLImageGroupList == null)
+        {
+            Debug.LogError("ERROR: Unable to find DL image group");
+            return;
+        }
+        else
+        {
+            foreach(Transform child in DLImageGroupList)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+        }
+
         DLImageGroupList.name = "DL_ImageGroup_" + layerName;
         for (int i = 0; i < layerSubLayers.Length; i++)
         {

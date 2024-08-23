@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 /*
  * Communicates between DataLayerInputUICon and DataLayerOutputUICon and DataLayerJsonManager
@@ -17,13 +18,14 @@ public class DataLayerUIManager : MonoBehaviour
     public GameObject dataJsonManager;
     public GameObject dataInputView;
     public GameObject subUIManager;
+    public GameObject dataLayerToEdit;
 
     void Start()
     {
         dataJsonManager = GameObject.FindWithTag("DataLayerJsonManager");
         GameObject objList = GameObject.FindWithTag("OutputList");
-        dataInputView = GameObject.FindWithTag("DataLayerInput");
-        subUIManager = GameObject.FindWithTag("SubLayerInputManager");
+        //dataInputView = GameObject.FindWithTag("DataLayerInput");
+        //subUIManager = GameObject.FindWithTag("SubLayerInputManager");
         tableImagesList = GameObject.FindWithTag("Table_Images").transform;
 
         if (objList != null)
@@ -37,12 +39,15 @@ public class DataLayerUIManager : MonoBehaviour
         //}
     }
 
+    public void InstantiateManagers()
+    {
+        dataInputView = GameObject.FindWithTag("DataLayerInput");
+        subUIManager = GameObject.FindWithTag("SubLayerInputManager");
+    }
+
     // Adding a NEW data layer
     public void AddDataLayerInput(string name, string desc, string credit, string iconPath, string color, SubLayer[] subLayers, Texture2D[] subImages, string dateType, DateValue[] timescales)
     {
-        // Save a new data layer to persistent path
-        dataJsonManager.GetComponent<DataLayerJSONCon>().SaveDataLayerToPersistent(name, desc, credit, iconPath, color, subLayers, dateType, timescales);
-
         // Instantiate a new data layer object
         GameObject newDataLayer = Instantiate(dataLayerObjectPrefab, outputObjectList);
         newDataLayer.GetComponent<DataLayerObject>().layerName = name;
@@ -57,15 +62,17 @@ public class DataLayerUIManager : MonoBehaviour
 
         // Rename gameObject
         newDataLayer.name = "DL_Item_" + name;
-        // Set tag of object
-        //newDataLayer.tag = "DLItem";
         // Rename data layer's objects
         newDataLayer.GetComponent<DataLayerObject>().RenameObjects(name);
         // Update data layer object prefab
         newDataLayer.GetComponent<DataLayerObject>().UpdateOutputListInfo(name, color);
         // Create table group for data layer
         Transform newGroup = Instantiate(tableImageGroupPrefab, tableImagesList);
-        newDataLayer.GetComponent<DataLayerObject>().SetDataLayerImageGroup(newGroup);
+        newDataLayer.GetComponent<DataLayerObject>().DLImageGroupList = newGroup;
+        newDataLayer.GetComponent<DataLayerObject>().SetDataLayerImageGroup();
+
+        // Save a new data layer to persistent path
+        dataJsonManager.GetComponent<DataLayerJSONCon>().SaveDataLayerToPersistent(name, desc, credit, iconPath, color, subLayers, dateType, timescales);
     }
 
     public void CheckExistingLayerName(string layerName)
@@ -85,8 +92,13 @@ public class DataLayerUIManager : MonoBehaviour
     }
 
     // Display the data layer that was selected back into the Input View panel 
-    public void DataLayerToEdit(string name, string desc, string credit, string iconPath, string color, SubLayer[] subLayers, string dateType, DateValue[] timescales)
+    public void DataLayerToEdit(GameObject dataLayerRef, string name, string desc, string credit, string iconPath, string color, SubLayer[] subLayers, string dateType, DateValue[] timescales)
     {
+        // change to update text
+        dataInputView.GetComponent<DataLayerInputUICon>().dataSaveButton.GetComponentInChildren<TMP_Text>().text = "Update";
+        // Set the data layer object reference
+        dataLayerToEdit = dataLayerRef;
+        dataInputView.GetComponent<DataLayerInputUICon>().beingEdited = true;
         // Load variables
         dataInputView.GetComponent<DataLayerInputUICon>().layerName = name;
         dataInputView.GetComponent<DataLayerInputUICon>().layerDesc = desc;
@@ -111,7 +123,34 @@ public class DataLayerUIManager : MonoBehaviour
         HelperMethods.DisplayTextureFromPath(iconPath, 150, inputImage, "Data Layer Icon");
         // Load sub layer prefabs
         subUIManager.GetComponent<SubLayerInputManager>().LoadInputSubLayers(subLayers, dateType);
-        // change save button to update button
+    }
 
+    public void UpdateExistingDataLayer(string name, string desc, string credit, string iconPath, string color, SubLayer[] subLayers, Texture2D[] subImages, string dateType, DateValue[] timescales)
+    {
+        dataLayerToEdit.GetComponent<DataLayerObject>().layerName = name;
+        dataLayerToEdit.GetComponent<DataLayerObject>().layerDesc = desc;
+        dataLayerToEdit.GetComponent<DataLayerObject>().layerCredit = credit;
+        dataLayerToEdit.GetComponent<DataLayerObject>().layerIconPath = iconPath;
+        dataLayerToEdit.GetComponent<DataLayerObject>().layerColor = color;
+        dataLayerToEdit.GetComponent<DataLayerObject>().layerSubLayers = subLayers;
+        dataLayerToEdit.GetComponent<DataLayerObject>().layerSubImages = subImages;
+        dataLayerToEdit.GetComponent<DataLayerObject>().layerDateType = dateType;
+        dataLayerToEdit.GetComponent<DataLayerObject>().layerTimescales = timescales;
+
+        // Rename gameObject
+        dataLayerToEdit.name = "DL_Item_" + name;
+        // Update data layer object name
+        dataLayerToEdit.GetComponent<DataLayerObject>().RenameObjects(name);
+        // Update data layer object prefab
+        dataLayerToEdit.GetComponent<DataLayerObject>().UpdateOutputListInfo(name, color);
+        // Update Image Group
+        dataLayerToEdit.GetComponent<DataLayerObject>().SetDataLayerImageGroup();
+        // Save an existing data layer to persistent path
+        dataJsonManager.GetComponent<DataLayerJSONCon>().SaveDataLayerToPersistent(name, desc, credit, iconPath, color, subLayers, dateType, timescales);
+        // Change updated to false
+        dataLayerToEdit = null;
+        dataInputView.GetComponent<DataLayerInputUICon>().beingEdited = false;
+        // change to save text
+        dataInputView.GetComponent<DataLayerInputUICon>().dataSaveButton.GetComponentInChildren<TMP_Text>().text = "Save";
     }
 }

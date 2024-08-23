@@ -6,6 +6,7 @@ using System.IO;
 using UnityEngine.UI;
 using System.Drawing;
 using Color = UnityEngine.Color;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class HelperMethods : MonoBehaviour
 {
@@ -66,10 +67,38 @@ public class HelperMethods : MonoBehaviour
         // rename file to new path based on title, and type of image (jpg, png)
         string destFilePath = Path.Combine(destDirectory, title + type);
 
+        //var source = new FileInfo(sourceFile);
+        //source.CopyTo(destFilePath, true);
+
+        try
+        {
+            using(var fs = new FileStream(sourceFile, FileMode.Open, FileAccess.Read, FileShare.None))
+            {
+                //System.IO.File.Copy(sourceFile, destFilePath, true);
+                Debug.Log("File opens successfully, no other process is using it");
+            }
+        }
+        catch (IOException ioEx)
+        {
+            Debug.LogError($"Failed to ACCESS file: {ioEx.Message}");
+            return null;
+        }
+
+        try
+        {
+            System.IO.File.Copy(sourceFile, destFilePath, true);
+            Debug.Log($"{title} image copied from: {sourceFile} to destination file: {destFilePath}");
+        }
+        catch (IOException io)
+        {
+            Debug.LogError($"Failed to COPY file: {io}");
+            return null;
+        }
+
         // copy file to another location
         // overwrites if already exists
-        System.IO.File.Copy(sourceFile, destFilePath, true);
-        Debug.Log($"{title} img coped from: {sourceFile}\nTo destination path: {destFilePath}");
+        //System.IO.File.Copy(sourceFile, destFilePath, true);
+        //Debug.Log($"{title} img coped from: {sourceFile}\nTo destination path: {destFilePath}");
 
         return destFilePath;
     }
@@ -89,11 +118,6 @@ public class HelperMethods : MonoBehaviour
             return Color.white;
         }
     }
-
-    //public static void ToggleTableItemVisibility(GameObject item)
-    //{
-
-    //}
 
     public static Texture2D GetTexture(string imgPath, int size)
     {
