@@ -12,6 +12,7 @@ public class ProjectFolderUICon : MonoBehaviour
     public Button projPathBrowseButton;
     public Button projPathSaveButton;
     public GameObject projManager;
+    public string pathFolder;
 
     void Start()
     {
@@ -30,28 +31,39 @@ public class ProjectFolderUICon : MonoBehaviour
             // send to JSON to be saved
             //projManager.GetComponent<ProjectJSONConAuth>().SaveProjPathToJSON(projectPath.text);
             // SaveProjPath(projectPath.text);
+            projManager.GetComponent<ProjectJSONConAuth>().SaveProjectToJSON(pathFolder);
         });
     }
 
     public void SelectValidateProjPath()
     {
-        var paths = StandaloneFileBrowser.OpenFolderPanel("Select New Project Folder", "", false);
+        var paths = StandaloneFileBrowser.OpenFolderPanel("Select where to save the project folder", "", false);
 
         if (paths.Length > 0)
         {
             string path = paths[0];
 
-            // Check if the folder is empty
-            if (IsFolderEmpty(path))
+            if (Directory.Exists(path))
             {
-                // display selected folder path
                 projectPath.text = path;
-                Debug.Log("The folder is empty.");
+                pathFolder = path;
+                //projManager.GetComponent<ProjectJSONConAuth>().SaveProjectToJSON(path);
             }
             else
             {
-                Debug.LogError("ERROR: The folder is not empty. Please select an empty folder to begin.");
+                Debug.LogError("ERROR: Path does not exist, cannot use it to save project folder in.");
             }
+            //// Check if the folder is empty
+            //if (IsFolderEmpty(path))
+            //{
+            //    // display selected folder path
+            //    projectPath.text = path;
+            //    Debug.Log("The folder is empty.");
+            //}
+            //else
+            //{
+            //    Debug.LogError("ERROR: The folder is not empty. Please select an empty folder to begin.");
+            //}
         }
         else
         {

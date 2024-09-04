@@ -101,7 +101,7 @@ public class HelperMethods : MonoBehaviour
 
         try
         {
-            using(var fs = new FileStream(sourceFile, FileMode.Open, FileAccess.Read, FileShare.None))
+            using(var fs = new FileStream(sourceFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 //System.IO.File.Copy(sourceFile, destFilePath, true);
                 Debug.Log("File opens successfully, no other process is using it");

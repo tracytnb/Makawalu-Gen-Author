@@ -14431,6 +14431,7 @@ MonoBehaviour:
   projPathBrowseButton: {fileID: 1272406825}
   projPathSaveButton: {fileID: 705206309}
   projManager: {fileID: 0}
+  pathFolder: 
 --- !u!1 &1410614477
 GameObject:
   m_ObjectHideFlags: 0
@@ -16805,12 +16806,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   persJsonURL: 
+  projDirectoryPath: 
   selectedFolderPath: 
   projectName: 
   projectDesc: 
   jsonURL: 
   baseLayerPath: 
   dataLayerPaths: []
+  jsonURLPath: 
+  jsonBaseLayerPath: 
+  jsonDataLayerPaths: []
+  baseManager: {fileID: 0}
+  dataUIManager: {fileID: 0}
 --- !u!1 &1665013499
 GameObject:
   m_ObjectHideFlags: 0

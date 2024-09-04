@@ -72,8 +72,26 @@ public class BaseLayerJSONCon : MonoBehaviour
 
     }
 
-    public void SaveBaseToJSON(string imgPath, string title, string desc)
+    public string SaveBaseToFolder(string finalPath)
     {
-        // Used to save base to json at the end
-    }
+        string path = finalPath;
+        string dirPath = Path.Combine(path, "BaseLayer");
+        if (!Directory.Exists(dirPath))
+        {
+            Directory.CreateDirectory(dirPath);
+        }
+
+        path = Path.Combine(dirPath, baseTitle + "_bl.json");
+
+        // Handle image
+        string savedImgPath = HelperMethods.CopyImageFile(imgURL, dirPath, baseTitle, ".png");
+
+        BaseLayerJSON baseJSON = new BaseLayerJSON(path, savedImgPath, baseTitle, baseDesc);
+        string entry = JsonUtility.ToJson(baseJSON, true);
+        File.WriteAllText(path, entry);
+        Debug.Log("SAVE BASEPATH JSON:\n" + entry);
+        projManager.GetComponent<ProjectJSONConAuth>().jsonBaseLayerPath = dirPath;
+
+        return dirPath;
+;    }
 }

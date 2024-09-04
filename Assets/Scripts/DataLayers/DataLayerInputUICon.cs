@@ -194,6 +194,7 @@ public class DataLayerInputUICon : MonoBehaviour
         {
             ValidateDataLayerIcon(paths[0]);
             inputLayerIcon.gameObject.SetActive(true);
+            inputLayerIcon.color = inputLayerColor.color;
             //StartCoroutine(HelperMethods.DisplayTextureFromPath(paths[0], 150, inputLayerIcon, "Data Layer Icon"));
             HelperMethods.DisplayTextureFromPath(paths[0], inputLayerIcon, "Data Layer Icon");
 
@@ -240,6 +241,7 @@ public class DataLayerInputUICon : MonoBehaviour
 
         // convert it to hex string to be saved later
         string hexColor = ColorUtility.ToHtmlStringRGB(color);
+        inputLayerIcon.color = color;
 
         Debug.Log("Color is hex: " + hexColor);
         return hexColor;

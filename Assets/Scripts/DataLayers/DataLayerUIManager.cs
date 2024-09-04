@@ -148,4 +148,52 @@ public class DataLayerUIManager : MonoBehaviour
         // change to save text
         dataInputView.GetComponent<DataLayerInputUICon>().dataSaveButton.GetComponentInChildren<TMP_Text>().text = "Save";
     }
+
+    public DataLayer[] SaveLayersToFolder(string folderPath)
+    {
+        DataLayer[] dataPaths = new DataLayer[10];
+
+        for(int i = 0; i < dataPaths.Length; i++)
+        {
+            dataPaths[i] = new DataLayer();
+        }
+
+        foreach (Transform dataObject in outputObjectList)
+        {
+            if (dataObject.name.Contains("DL_Item"))
+            {
+                Debug.Log("name: " + dataObject.name);
+                GameObject dataLayer = dataObject.gameObject;
+
+                string name = dataLayer.GetComponent<DataLayerObject>().layerName;
+                string desc = dataLayer.GetComponent<DataLayerObject>().layerDesc;
+                string credit = dataLayer.GetComponent<DataLayerObject>().layerCredit;
+                string icon = dataLayer.GetComponent<DataLayerObject>().layerIconPath;
+                string color = dataLayer.GetComponent<DataLayerObject>().layerColor;
+                SubLayer[] sub = dataLayer.GetComponent<DataLayerObject>().layerSubLayers;
+                string dateType = dataLayer.GetComponent<DataLayerObject>().layerDateType;
+                DateValue[] time = dataLayer.GetComponent<DataLayerObject>().layerTimescales;
+
+                string dataPath = dataJsonManager.GetComponent<DataLayerJSONCon>().SaveDataLayerToFolder(folderPath, name, desc, credit, icon, color, sub, dateType, time);
+
+                if (dataPath == null)
+                {
+                    Debug.Log("NULL");
+                }
+
+                // Add into dataPaths array
+                for (int i = 0; i < dataPaths.Length; i++)
+                {
+                    if (string.IsNullOrEmpty(dataPaths[i].dataLayerPath))
+                    {
+                        Debug.Log(dataPaths[i]);
+                        dataPaths[i].dataLayerPath = dataPath;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return dataPaths;
+    }
 }

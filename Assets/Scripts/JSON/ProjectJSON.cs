@@ -22,6 +22,7 @@ public class DataLayer
 [Serializable]
 public class ProjectJSON
 {
+    public string rootPath;
     public string projectName;
     public string projectDesc;
     public string jsonURL;
@@ -29,9 +30,10 @@ public class ProjectJSON
     public DataLayer[] dataLayerPaths;
     // public string jsonElementsPositionsPath;
 
-    public ProjectJSON(string name, string desc, string json, string BLPath, DataLayer[] DLPaths)
+    public ProjectJSON(string root, string name, string desc, string json, string BLPath, DataLayer[] DLPaths)
     {
         // string jsonTEPositionsPath use up above
+        rootPath = root;
         projectName = name;
         projectDesc = desc;
         jsonURL = json;

@@ -81,7 +81,40 @@ public class DataLayerJSONCon : MonoBehaviour
         string entry = JsonUtility.ToJson(dataJSON, true);
         File.WriteAllText(path, entry);
         Debug.Log("SAVED DATA LAYER PERSISTENT PATH JSON\n" + entry);
+
+        Debug.Log("The directory path: " + dirPath);
         projManager.GetComponent<ProjectJSONConAuth>().SaveDataPathToPersistent(dirPath);
 
+    }
+
+    public string SaveDataLayerToFolder(string folderPath, string title, string desc, string credit, string iconPath, string color, SubLayer[] subLayers, string dateType, DateValue[] time)
+    {
+        string path = folderPath;
+        string dirPath = Path.Combine(path, title);
+
+        if (!Directory.Exists(dirPath))
+        {
+            Directory.CreateDirectory(dirPath);
+        }
+
+        path = Path.Combine(dirPath, title + "_dl.json");
+
+        string dataJsonPath = path;
+
+        string savedIcon = HelperMethods.CopyImageFile(iconPath, dirPath, title, "_icon.png");
+
+        // Handle sub layer image paths
+        foreach (SubLayer sub in subLayers)
+        {
+            sub.imgURLPath = HelperMethods.CopyImageFile(sub.imgURLPath, dirPath, title, $"_{sub.subName}.png");
+        }
+
+        DataLayerJSON dataJSON = new DataLayerJSON(dataJsonPath, title, desc, credit, savedIcon, color, subLayers, dateType, time);
+        string entry = JsonUtility.ToJson(dataJSON, true);
+        File.WriteAllText(path, entry);
+
+        Debug.Log("SAVED DATA LAYER TO FINAL FOLDER JSON\n" + entry);
+
+        return dataJsonPath;
     }
 }
