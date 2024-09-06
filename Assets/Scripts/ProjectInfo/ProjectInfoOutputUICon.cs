@@ -23,6 +23,7 @@ public class ProjectInfoOutputUICon : MonoBehaviour
         outputBaseImg.GetComponent<OutputListItem>().outputObjects.Add(baseImgTable);
 
         baseImgTable.SetActive(false);
+        baseTitleTable.SetActive(false);
     }
 
     public void UpdateOutputProjectInfo(string baseName, string basePath)
@@ -32,6 +33,7 @@ public class ProjectInfoOutputUICon : MonoBehaviour
         outputBaseImg.GetComponent<OutputListItem>().outputLabel.text = baseName + " Map Image";
         // Update table objects
         baseImgTable.SetActive(true);
+        baseTitleTable.SetActive(true);
         baseTitleTable.GetComponent<TMP_Text>().text = baseName;
         RawImage baseImg = baseImgTable.GetComponent<RawImage>();
         HelperMethods.DisplayTextureFromPath(basePath, baseImg, "Table Base Image");

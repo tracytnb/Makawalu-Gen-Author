@@ -115,6 +115,6 @@ public class DataLayerJSONCon : MonoBehaviour
 
         Debug.Log("SAVED DATA LAYER TO FINAL FOLDER JSON\n" + entry);
 
-        return dataJsonPath;
+        return dirPath;
     }
 }
