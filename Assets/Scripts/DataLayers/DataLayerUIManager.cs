@@ -58,7 +58,7 @@ public class DataLayerUIManager : MonoBehaviour
         // Rename gameObject
         newDataLayer.name = "DL_Item_" + name;
         // Rename data layer's objects
-        newDataLayer.GetComponent<DataLayerObject>().RenameObjects(name);
+        newDataLayer.GetComponent<DataLayerObject>().RenameObjects(name, "");
         // Update data layer object prefab
         newDataLayer.GetComponent<DataLayerObject>().UpdateOutputListInfo(name, color);
         // Create table group for data layer
@@ -90,7 +90,8 @@ public class DataLayerUIManager : MonoBehaviour
     public void DataLayerToEdit(GameObject dataLayerRef, string name, string desc, string credit, string iconPath, string color, SubLayer[] subLayers, string dateType, DateValue[] timescales)
     {
         // change to update text
-        dataInputView.GetComponent<DataLayerInputUICon>().dataSaveButton.GetComponentInChildren<TMP_Text>().text = "Update";
+        dataInputView.GetComponent<DataLayerInputUICon>().dataAddButton.GetComponentInChildren<TMP_Text>().text = "Update";
+        dataInputView.GetComponent<DataLayerInputUICon>().dataCancelButton.gameObject.SetActive(true);
         // Set the data layer object reference
         dataLayerToEdit = dataLayerRef;
         dataInputView.GetComponent<DataLayerInputUICon>().beingEdited = true;
@@ -122,6 +123,14 @@ public class DataLayerUIManager : MonoBehaviour
 
     public void UpdateExistingDataLayer(string name, string desc, string credit, string iconPath, string color, SubLayer[] subLayers, Texture2D[] subImages, string dateType, DateValue[] timescales)
     {
+        string originalName = dataLayerToEdit.GetComponent<DataLayerObject>().layerName;
+
+        if (originalName != name)
+        {
+            // Update data layer object name
+            dataLayerToEdit.GetComponent<DataLayerObject>().RenameObjects(name, originalName);
+        }
+
         dataLayerToEdit.GetComponent<DataLayerObject>().layerName = name;
         dataLayerToEdit.GetComponent<DataLayerObject>().layerDesc = desc;
         dataLayerToEdit.GetComponent<DataLayerObject>().layerCredit = credit;
@@ -134,8 +143,6 @@ public class DataLayerUIManager : MonoBehaviour
 
         // Rename gameObject
         dataLayerToEdit.name = "DL_Item_" + name;
-        // Update data layer object name
-        dataLayerToEdit.GetComponent<DataLayerObject>().RenameObjects(name);
         // Update data layer object prefab
         dataLayerToEdit.GetComponent<DataLayerObject>().UpdateOutputListInfo(name, color);
         // Update Image Group
@@ -146,7 +153,8 @@ public class DataLayerUIManager : MonoBehaviour
         dataLayerToEdit = null;
         dataInputView.GetComponent<DataLayerInputUICon>().beingEdited = false;
         // change to save text
-        dataInputView.GetComponent<DataLayerInputUICon>().dataSaveButton.GetComponentInChildren<TMP_Text>().text = "Save";
+        dataInputView.GetComponent<DataLayerInputUICon>().dataAddButton.GetComponentInChildren<TMP_Text>().text = "Add";
+        dataInputView.GetComponent<DataLayerInputUICon>().dataCancelButton.gameObject.SetActive(false);
     }
 
     public DataLayer[] SaveLayersToFolder(string folderPath)

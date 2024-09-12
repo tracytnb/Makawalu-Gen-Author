@@ -59,13 +59,28 @@ public class DataLayerObject : MonoBehaviour
         }
     }
 
-    public void RenameObjects(string layerName)
+    public void RenameObjects(string layerName, string oldName)
     {
         for(int i = 0; i < transform.childCount; i++)
         {
             Transform child = transform.GetChild(i);
-            string name = child.name;
-            child.name = name + "_" + layerName;
+            string current = child.name;
+            Debug.Log(child.name);
+
+            if (!string.IsNullOrEmpty(oldName))
+            {
+                string suffix = "_" + oldName;
+
+                if (current.EndsWith(suffix))
+                {
+                    // remove previous layer name
+                    current = current.Substring(0, current.Length - suffix.Length);
+                }
+            }
+
+            // rename with new suffix
+            child.name = current + "_" + layerName;
+            Debug.Log(child.name);
         }
     }
 

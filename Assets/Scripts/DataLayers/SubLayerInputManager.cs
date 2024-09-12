@@ -34,6 +34,7 @@ public class SubLayerInputManager : MonoBehaviour
         // start with a new sub layer list and date value list each time to be saved and passed
         subLayerList = new List<SubLayer>();
         dateValueList = new List<DateValue>();
+        subTextureList = new List<Texture2D>();
 
         Debug.Log(subLayerUIList.childCount);
         foreach (Transform subLayer in subLayerUIList)

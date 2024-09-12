@@ -12,13 +12,13 @@ public class ProjectSetupSteps : MonoBehaviour
     void Start()
     {
         // Add to the list of buttons
-        foreach(Transform obj in projectStepList)
+        foreach (Transform obj in projectStepList)
         {
             projectStepButtons.Add(obj.gameObject);
         }
 
         // Turn everything off
-        foreach(GameObject button in projectStepButtons)
+        foreach (GameObject button in projectStepButtons)
         {
             // Add a listener to each button
             button.GetComponent<Button>().onClick.AddListener(() =>
@@ -26,19 +26,22 @@ public class ProjectSetupSteps : MonoBehaviour
                 TurnOffOtherButtons(button);
             });
 
-            button.GetComponent<Image>().enabled = false;
+            //button.GetComponent<Image>().enabled = false;
         }
 
         // Only the first button is highlighted
-        projectStepButtons[0].GetComponent<Image>().enabled = true;
+        projectStepButtons[0].transform.Find("BlackFill").gameObject.SetActive(false);
     }
 
-    public void TurnOffOtherButtons(GameObject selectedButton)
-    {
-        foreach(GameObject button in projectStepButtons)
+        public void TurnOffOtherButtons(GameObject selectedButton)
         {
-            // Turn off all other buttons except the one that was pressed
-            button.GetComponent<Image>().enabled = (button == selectedButton);
+            foreach (GameObject button in projectStepButtons)
+            {
+                // Turn off all other buttons except the one that was pressed
+                //button.GetComponent<Image>().enabled = (button == selectedButton);
+                GameObject child = button.transform.Find("BlackFill").gameObject;
+                bool equals = (button == selectedButton);
+                child.SetActive(!equals);
+            }
         }
     }
-}

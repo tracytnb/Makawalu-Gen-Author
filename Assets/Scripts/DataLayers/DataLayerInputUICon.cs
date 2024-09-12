@@ -38,13 +38,15 @@ public class DataLayerInputUICon : MonoBehaviour
     // buttons
     public Button dataSelectColorButton;
     public Button dataIconButton;
-    public Button dataSaveButton;
+    public Button dataAddButton;
+    public Button dataCancelButton;
     //  bool
     public bool beingEdited;
 
     private void Start()
     {
         colorPicker.gameObject.SetActive(false);
+        dataCancelButton.gameObject.SetActive(false);
         dataUIManager = GameObject.FindWithTag("DataLayerUIManager");
         subLayerManager = GameObject.FindWithTag("SubLayerInputManager");
 
@@ -58,9 +60,14 @@ public class DataLayerInputUICon : MonoBehaviour
             SelectDataLayerIcon();
         });
 
-        dataSaveButton.onClick.AddListener(() =>
+        dataAddButton.onClick.AddListener(() =>
         {
             ValidateDataLayerInfo();
+        });
+
+        dataCancelButton.onClick.AddListener(() =>
+        {
+            ResetInputFields();
         });
     }
 
@@ -150,6 +157,8 @@ public class DataLayerInputUICon : MonoBehaviour
         // Reset color picker
         Image colorImg = colorPicker.GetComponent<ColorPaletteController>().pickedColorImage;
         colorImg.color = Color.white;
+        dataCancelButton.gameObject.SetActive(false);
+        dataAddButton.GetComponentInChildren<TMP_Text>().text = "Add";
     }
 
     public DateType GetSelectedDateType()

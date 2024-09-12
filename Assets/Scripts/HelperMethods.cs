@@ -41,6 +41,27 @@ public class HelperMethods : MonoBehaviour
         return "";
     }
 
+    public static void DeleteDirectory(string directoryPath)
+    {
+        if (Directory.Exists(directoryPath))
+        {
+            try
+            {
+                // Delete the directory and all its contents recursively
+                Directory.Delete(directoryPath, true);
+                Debug.Log("NOTICE: Directory deleted successfully: " + directoryPath);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("ERROR: Failed to delete directory: " + e.Message);
+            }
+        }
+        else
+        {
+            Debug.LogError("ERROR: Directory not found: " + directoryPath);
+        }
+    }
+
     public static Texture2D DisplayTextureFromPath(string imgPath, RawImage rawImage, string type)
     {
         if (File.Exists(imgPath))
@@ -88,12 +109,56 @@ public class HelperMethods : MonoBehaviour
         //yield return null;
     }
 
+    //public static string CopyImageFile(string sourceFile, string destDirectory, string title, string type)
+    //{
+    //    // rename file to new path based on title, and type of image (jpg, png)
+    //    string destFilePath = Path.Combine(destDirectory, title + type);
+
+    //    if (sourceFile == destDirectory)
+    //    {
+    //        Debug.Log("Paths are already the same");
+    //        return destFilePath;
+    //    }
+
+    //    try
+    //    {
+    //        using(var fs = new FileStream(sourceFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+    //        {
+    //            //System.IO.File.Copy(sourceFile, destFilePath, true);
+    //            Debug.Log("File opens successfully, no other process is using it");
+    //        }
+    //    }
+    //    catch (IOException ioEx)
+    //    {
+    //        Debug.LogError($"Failed to ACCESS file: {ioEx.Message}");
+    //        return null;
+    //    }
+
+    //    try
+    //    {
+    //        System.IO.File.Copy(sourceFile, destFilePath, true);
+    //        Debug.Log($"{title} image copied from: {sourceFile} to destination file: {destFilePath}");
+    //    }
+    //    catch (IOException io)
+    //    {
+    //        Debug.LogError($"Failed to COPY file: {io}");
+    //        return null;
+    //    }
+
+    //    // copy file to another location
+    //    // overwrites if already exists
+    //    //System.IO.File.Copy(sourceFile, destFilePath, true);
+    //    //Debug.Log($"{title} img coped from: {sourceFile}\nTo destination path: {destFilePath}");
+
+    //    return destFilePath;
+    //}
+
     public static string CopyImageFile(string sourceFile, string destDirectory, string title, string type)
     {
-        // rename file to new path based on title, and type of image (jpg, png)
+        // Rename file to new path based on title and type of image (jpg, png)
         string destFilePath = Path.Combine(destDirectory, title + type);
 
-        if (sourceFile == destDirectory)
+        if (sourceFile == destFilePath)
         {
             Debug.Log("Paths are already the same");
             return destFilePath;
@@ -101,33 +166,25 @@ public class HelperMethods : MonoBehaviour
 
         try
         {
-            using(var fs = new FileStream(sourceFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                //System.IO.File.Copy(sourceFile, destFilePath, true);
-                Debug.Log("File opens successfully, no other process is using it");
-            }
+            // Try to copy the file directly
+            File.Copy(sourceFile, destFilePath, true); // Overwrites if already exists
+            Debug.Log($"{title} image copied from: {sourceFile} to destination file: {destFilePath}");
         }
         catch (IOException ioEx)
         {
-            Debug.LogError($"Failed to ACCESS file: {ioEx.Message}");
+            Debug.LogError($"Failed to copy file due to an I/O error: {ioEx.Message}");
             return null;
         }
-
-        try
+        catch (UnauthorizedAccessException uae)
         {
-            System.IO.File.Copy(sourceFile, destFilePath, true);
-            Debug.Log($"{title} image copied from: {sourceFile} to destination file: {destFilePath}");
-        }
-        catch (IOException io)
-        {
-            Debug.LogError($"Failed to COPY file: {io}");
+            Debug.LogError($"Access to the file denied: {uae.Message}");
             return null;
         }
-
-        // copy file to another location
-        // overwrites if already exists
-        //System.IO.File.Copy(sourceFile, destFilePath, true);
-        //Debug.Log($"{title} img coped from: {sourceFile}\nTo destination path: {destFilePath}");
+        catch (Exception ex)
+        {
+            Debug.LogError($"Unexpected error while copying file: {ex.Message}");
+            return null;
+        }
 
         return destFilePath;
     }

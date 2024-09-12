@@ -43,9 +43,21 @@ public class DataLayerJSONCon : MonoBehaviour
         // name json with title of data layer
         path = Path.Combine(dirPath, title + "_dl.json");
 
-        // if user has changed the data layer title but there exists a path already
-        if (jsonURL != null && jsonURL != path)
+        // Handle icon path
+        string savedIconPath = HelperMethods.CopyImageFile(iconPath, dirPath, title, "_icon.png");
+
+        // Handle sub layer image paths
+        foreach (SubLayer sub in subLayers)
         {
+            sub.imgURLPath = HelperMethods.CopyImageFile(sub.imgURLPath, dirPath, title, $"_{sub.subName}.png");
+        }
+
+        // if user has changed the data layer title but there exists a path already
+        if (!string.IsNullOrEmpty(jsonURL) && jsonURL != path)
+        {
+            // Delete old directory
+            string oldPath = Path.GetDirectoryName(jsonURL);
+            HelperMethods.DeleteDirectory(oldPath);
             // Rename json filename to reflect new basemap title name
             string newPath = HelperMethods.RenameFile(path, jsonURL);
 
@@ -54,15 +66,6 @@ public class DataLayerJSONCon : MonoBehaviour
             {
                 jsonURL = newPath;
             }
-        }
-
-        // Handle icon path
-        string savedIconPath = HelperMethods.CopyImageFile(iconPath, dirPath, title, "_icon.png");
-
-        // Handle sub layer image paths
-        foreach (SubLayer sub in subLayers)
-        {
-            sub.imgURLPath = HelperMethods.CopyImageFile(sub.imgURLPath, dirPath, title, $"_{sub.subName}.png");
         }
 
         // Update class variables
